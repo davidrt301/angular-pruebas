@@ -40,7 +40,10 @@ export class MetasService {
         }
     ]
 
-    getMetas(): Metas[] {
+    getMetas(): Metas[] {/* obtenerMetas */
         return this.metasMock;
+    }
+    setMetas(meta: Metas){/* actulizarMetas */
+        this.metasMock.push(meta);
     }
 }
