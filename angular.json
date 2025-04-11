@@ -27,6 +27,10 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               {
+                "glob": "public/favicon.ico",
+                "input": "public/img"
+              },
+              {
                 "glob": "**/*",
                 "input": "public"
               }
@@ -85,6 +89,10 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              {
+                "glob": "public/favicon.ico",
+                "input": "public/img"
+              },
               {
                 "glob": "**/*",
                 "input": "public"
