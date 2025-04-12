@@ -1,16 +1,19 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Metas } from '../../core/models/metas';
 import { MetasService } from '../../services/metas.service';
 import { Router , RouterLink} from '@angular/router';
 
 @Component({
+  selector: 'app-nuevo',
   // imports: [ReactiveFormsModule], // Removed as it is not valid in @Component
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './nuevo.component.html',
   styleUrl: './nuevo.component.scss'
 })
-export class NuevoComponent {
+export class NuevoComponent implements OnChanges {
+  @Input()
+  metasIng? : Metas;
   metaEnviar?: Metas;
 
   formularioDeMetas = new FormGroup({
@@ -26,28 +29,50 @@ export class NuevoComponent {
 frecuencias = ["dia","semana","mes","año"];
 iconos = ["💻", "🏃‍♂️", "📚", "✈️", "💵"];
 
+
 constructor(private servicioCursos: MetasService, private router: Router){}
+  ngOnChanges(changes: SimpleChanges): void {
+   if (this.metasIng){
+    this.formularioDeMetas.setValue({
+      id: this.metasIng.id,
+      detalles: this.metasIng.detalles,
+      periodo: this.metasIng.periodo,
+      eventos: this.metasIng.eventos,
+      icono: this.metasIng.icono,
+      meta: this.metasIng.meta,
+      plazo: this.metasIng.plazo,
+      completado: this.metasIng.completado
+    });
+   }
+  }
+
+llenarMetaAEnviar():Metas{
+  this.metaEnviar = {
+    "id": this.metasIng ? this.metasIng!.id : Math.random().toString(),
+    "detalles": this.formularioDeMetas.value.detalles!,
+    "periodo": this.formularioDeMetas.value.periodo!,
+    "eventos": this.formularioDeMetas.value.eventos!,
+    "icono": this.formularioDeMetas.value.icono!,
+    "meta": this.formularioDeMetas.value.meta!,
+    "plazo": this.formularioDeMetas.value.plazo!,
+    "completado": this.formularioDeMetas.value.completado!
+    };
+    return this.metaEnviar;
+}
 
 subirFormulario() {
-  this.metaEnviar = {
-  "id": Math.random().toString(),
-  "detalles": this.formularioDeMetas.value.detalles,
-  "periodo": this.formularioDeMetas.value.periodo,
-  "eventos": this.formularioDeMetas.value.eventos,
-  "icono": this.formularioDeMetas.value.icono,
-  "meta": this.formularioDeMetas.value.meta,
-  "plazo": this.formularioDeMetas.value.plazo,
-  "completado": this.formularioDeMetas.value.completado
-  }
-  this.servicioCursos.setMetas(this.metaEnviar);
-  console.log(this.metaEnviar);
+  this.llenarMetaAEnviar()
+  this.servicioCursos.crearMetas(this.llenarMetaAEnviar())
   this.router.navigate(['/lista']);
-  /* console.log(this.formularioDeMetas.value.detalles)
-  console.log(this.formularioDeMetas.value.periodo)
-  console.log(this.formularioDeMetas.value.eventos)
-  console.log(this.formularioDeMetas.value.icono)
-  console.log(this.formularioDeMetas.value.meta)
-  console.log(this.formularioDeMetas.value.plazo)
-  console.log(this.formularioDeMetas.value.completado) */
+}
+actualizarMeta(){
+  this.llenarMetaAEnviar()
+  this.servicioCursos.actualizarMetas(this.llenarMetaAEnviar())
+  this.router.navigate(['/lista']);
+}
+eliminarMeta(){
+  this.llenarMetaAEnviar()
+  this.servicioCursos.eliminarMetas(this.llenarMetaAEnviar())
+  this.router.navigate(['/lista']);
 }
 }

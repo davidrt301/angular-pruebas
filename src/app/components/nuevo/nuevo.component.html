@@ -40,9 +40,21 @@
             </label>
         </form>
         <div class="botones">
+            @if (!metasIng) {
             <button class="boton boton--negro" (click) ="subirFormulario()">
                 Crear
             </button>
+        }
+            @if (metasIng) {
+            <button class="boton boton--negro" (click) ="actualizarMeta()">
+                Actualizar
+            </button>
+        }
+            @if (metasIng) {
+            <button class="boton boton--rojo" (click) ="eliminarMeta()">
+                Borrar
+            </button>
+        }
             <button class="boton boton--gris">
                 Cancelar
             </button>
